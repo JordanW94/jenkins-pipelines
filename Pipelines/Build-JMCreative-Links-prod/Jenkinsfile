@@ -1,0 +1,44 @@
+pipeline {
+    agent any
+    triggers {
+        pollSCM '* * * * *'
+    }
+    environment {
+        //once you sign up for Docker hub, use that user_id here
+        registry = "jwhitbread/jmcreative-links:latest"
+        //- update your credentials ID after creating credentials for connecting to Docker Hub
+        registryCredential = 'DockerHub'
+        dockerImage = ''
+    }
+    
+    stages {
+        stage('Cloning Git') {
+            steps {
+                //define scm connection for polling
+                //define scm connection for polling
+                checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'jenkins-github-ssh', url: 'https://github.com/JordanW94/littlelink-server']]])
+            }
+        }
+    
+    // Building Docker images
+    stage('Building image') {
+      steps{
+        script {
+          dockerImage = docker.build registry
+        }
+      }
+    }
+    
+     // Uploading Docker images into Docker Hub
+    stage('Upload Image') {
+     steps{    
+         script {
+            docker.withRegistry( '', registryCredential ) {
+            dockerImage.push()
+            }
+        }
+      }
+    }
+    
+  }
+}
