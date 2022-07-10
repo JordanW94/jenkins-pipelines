@@ -3,6 +3,9 @@ pipeline {
     triggers {
         pollSCM '* * * * *'
     }
+    
+    tools {nodejs "nodejs"}
+
     environment {
         //once you sign up for Docker hub, use that user_id here
         registry = "jwhitbread/jmcreative:dev"
