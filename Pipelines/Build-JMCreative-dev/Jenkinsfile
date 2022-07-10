@@ -27,7 +27,7 @@ pipeline {
     stage('Install dependencies') {
       steps{
         dir('app'){
-          sh 'npm install && npm uninstall node-sass && npm i node-sass && npm rebuild node-sass && npm run compile:scss'
+          sh 'npm install && npm run compile:scss'
         }
       }
     }
