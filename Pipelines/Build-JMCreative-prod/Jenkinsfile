@@ -3,6 +3,9 @@ pipeline {
     triggers {
         pollSCM '* * * * *'
     }
+
+    tools {nodejs "nodejs"}
+
     environment {
         //once you sign up for Docker hub, use that user_id here
         registry = "jwhitbread/jmcreative:latest"
@@ -19,6 +22,24 @@ pipeline {
                 checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'jenkins-github-ssh', url: 'https://github.com/JordanW94/jmcreative']]])
             }
         }
+    
+    // Install dependencies
+    stage('Install dependencies') {
+      steps{
+        dir('app'){
+          sh 'npm install && npm run compile:scss'
+        }
+      }
+    }
+
+    // Remove node_modules
+    stage('Remove node_modules') {
+      steps{
+        dir('app'){
+          sh 'rm -r node_modules/'
+        }
+      }
+    }
     
     // Building Docker images
     stage('Building image') {
