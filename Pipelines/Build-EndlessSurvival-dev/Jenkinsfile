@@ -40,9 +40,12 @@ pipeline {
         }
       }
     }
-	post { 
-        always { 
-            sh"docker system prune -f"
+  }
+  
+  post { 
+   always { 
+	    script {
+	      sh"docker system prune -f"
         }
     }
   }
