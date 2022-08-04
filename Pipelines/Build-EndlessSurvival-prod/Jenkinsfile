@@ -25,7 +25,7 @@ pipeline {
     stage('Building image') {
       steps{
         script {
-		  sh"docker build $registry --no-cache"
+		  sh"docker build . --no-cache -t $registry"
         }
       }
     }
